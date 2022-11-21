@@ -30,7 +30,7 @@ public static class MapUtilities
 
         var systems = CachedShipStatus.Systems;
         if (systems.Count <= 0) return;
-        
+
         foreach (var systemTypes in SystemTypeHelpers.AllTypes)
         {
             if (!systems.ContainsKey(systemTypes)) continue;
@@ -46,7 +46,7 @@ public static class ShipStatus_Awake_Patch
     public static void Postfix(ShipStatus __instance)
     {
         MapUtilities.CachedShipStatus = __instance;
-        SubmergedCompatibility.SetupMap(__instance);
+        // SubmergedCompatibility.SetupMap(__instance);
     }
 }
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.OnDestroy))]
@@ -57,6 +57,6 @@ public static class ShipStatus_OnDestroy_Patch
     {
         MapUtilities.CachedShipStatus = null;
         MapUtilities.MapDestroyed();
-        SubmergedCompatibility.SetupMap(null);
+        // SubmergedCompatibility.SetupMap(null);
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,10 +18,10 @@ namespace TheOtherRoles
         {
             public const string ElevatorMover = "ElevatorMover";
         }
-        
+
         public const string SUBMERGED_GUID = "Submerged";
-        public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType) 5;
-        
+        public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)5;
+
         public static SemanticVersioning.Version Version { get; private set; }
         public static bool Loaded { get; private set; }
         public static bool LoadedExternally { get; private set; }
@@ -33,7 +33,7 @@ namespace TheOtherRoles
         public static MonoBehaviour SubmarineStatus { get; private set; }
 
         public static bool IsSubmerged { get; private set; }
-        
+
         public static bool DisableO2MaskCheckForEmergency
         {
             set
@@ -42,7 +42,7 @@ namespace TheOtherRoles
                 DisableO2MaskCheckField.SetValue(null, value);
             }
         }
-        
+
         public static void SetupMap(ShipStatus map)
         {
             if (map == null)
@@ -51,16 +51,16 @@ namespace TheOtherRoles
                 SubmarineStatus = null;
                 return;
             }
-            
+
             IsSubmerged = map.Type == SubmergedCompatibility.SUBMERGED_MAP_TYPE;
             if (!IsSubmerged) return;
-            
+
             SubmarineStatus = map.GetComponent(Il2CppType.From(SubmarineStatusType))?.TryCast(SubmarineStatusType) as MonoBehaviour;
         }
 
         private static Type SubmarineStatusType;
         private static MethodInfo CalculateLightRadiusMethod;
-        
+
         private static Type TaskIsEmergencyPatchType;
         private static FieldInfo DisableO2MaskCheckField;
 
@@ -93,10 +93,10 @@ namespace TheOtherRoles
                 Assembly = Assembly.Load(assemblyBuffer);
 
                 var pluginType = Assembly.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(BasePlugin)));
-                Plugin = (BasePlugin) Activator.CreateInstance(pluginType!);
+                Plugin = (BasePlugin)Activator.CreateInstance(pluginType!);
                 Plugin.Load();
 
-                Version = pluginType.GetCustomAttribute<BepInPlugin>().Version.BaseVersion();;
+                Version = pluginType.GetCustomAttribute<BepInPlugin>().Version.BaseVersion(); ;
 
                 IL2CPPChainloader.Instance.Plugins[SUBMERGED_GUID] = new();
                 return true;
@@ -107,7 +107,7 @@ namespace TheOtherRoles
             }
             return false;
         }
-        
+
 
         public static void Initialize()
         {
@@ -127,20 +127,20 @@ namespace TheOtherRoles
 
             CredentialsPatch.PingTrackerPatch.modStamp = new GameObject();
             Object.DontDestroyOnLoad(CredentialsPatch.PingTrackerPatch.modStamp);
-            
+
             Types = AccessTools.GetTypesFromAssembly(Assembly);
-            
-            InjectedTypes = (Dictionary<string, Type>) AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")
+
+            InjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Types.FirstOrDefault(t => t.Name == "ComponentExtensions"), "RegisteredTypes")
                 .Invoke(null, Array.Empty<object>());
-            
+
             SubmarineStatusType = Types.First(t => t.Name == "SubmarineStatus");
             CalculateLightRadiusMethod = AccessTools.Method(SubmarineStatusType, "CalculateLightRadius");
-            
+
             TaskIsEmergencyPatchType = Types.First(t => t.Name == "PlayerTask_TaskIsEmergency_Patch");
             DisableO2MaskCheckField = AccessTools.Field(TaskIsEmergencyPatchType, "DisableO2MaskCheck");
 
             FloorHandlerType = Types.First(t => t.Name == "FloorHandler");
-            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new Type[] {typeof(PlayerControl)});
+            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new Type[] { typeof(PlayerControl) });
             RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
 
             Vent_MoveToVent_PatchType = Types.First(t => t.Name == "Vent_MoveToVent_Patch");
@@ -162,29 +162,35 @@ namespace TheOtherRoles
             return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingSubmergedBehaviour>();
         }
 
-        public static float GetSubmergedNeutralLightRadius(bool isImpostor) {
+        public static float GetSubmergedNeutralLightRadius(bool isImpostor)
+        {
             if (!Loaded) return 0;
             return (float)CalculateLightRadiusMethod.Invoke(SubmarineStatus, new object[] { null, true, isImpostor });
         }
 
-        public static void ChangeFloor(bool toUpper) {
+        public static void ChangeFloor(bool toUpper)
+        {
             if (!Loaded) return;
             MonoBehaviour _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new object[] { CachedPlayer.LocalPlayer.PlayerControl })).TryCast(FloorHandlerType) as MonoBehaviour;
             RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
         }
 
-        public static bool getInTransition() {
+        public static bool getInTransition()
+        {
             if (!Loaded) return false;
             return (bool)InTransitionField.GetValue(null);
         }
 
-        public static void RepairOxygen() {
+        public static void RepairOxygen()
+        {
             if (!Loaded) return;
-            try {
+            try
+            {
                 ShipStatus.Instance.RpcRepairSystem((SystemTypes)130, 64);
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.Invoke(null, Array.Empty<object>()), new object[] { CachedPlayer.LocalPlayer.PlayerControl, 64 });
             }
-            catch (System.NullReferenceException) {
+            catch (System.NullReferenceException)
+            {
                 TheOtherRolesPlugin.Logger.LogMessage("null reference in engineer oxygen fix");
             }
 
@@ -197,3 +203,4 @@ namespace TheOtherRoles
         public MissingSubmergedBehaviour(IntPtr ptr) : base(ptr) { }
     }
 }
+*/

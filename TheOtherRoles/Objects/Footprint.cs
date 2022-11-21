@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 
-namespace TheOtherRoles.Objects 
+namespace TheOtherRoles.Objects
 {
     public class FootprintHolder : MonoBehaviour
     {
@@ -19,13 +19,13 @@ namespace TheOtherRoles.Objects
             set => _instance = value;
 
         }
-        
+
         private static Sprite _footprintSprite;
         private static Sprite FootprintSprite => _footprintSprite ??= Helpers.loadSpriteFromResources("TheOtherRoles.Resources.Footprint.png", 600f);
 
         private static bool AnonymousFootprints => TheOtherRoles.Detective.anonymousFootprints;
         private static float FootprintDuration => TheOtherRoles.Detective.footprintDuration;
-        
+
         private class Footprint
         {
             public GameObject GameObject;
@@ -42,16 +42,16 @@ namespace TheOtherRoles.Objects
                 Renderer = GameObject.AddComponent<SpriteRenderer>();
                 Renderer.sprite = FootprintSprite;
                 Renderer.color = Color.clear;
-                GameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
+                // GameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
             }
         }
 
-       
+
 
         private readonly ConcurrentBag<Footprint> _pool = new();
         private readonly List<Footprint> _activeFootprints = new();
         private readonly List<Footprint> _toRemove = new();
-        
+
         [HideFromIl2Cpp]
         public void MakeFootprint(PlayerControl player)
         {
@@ -61,7 +61,7 @@ namespace TheOtherRoles.Objects
             }
 
             print.Lifetime = FootprintDuration;
-            
+
             var pos = player.transform.position;
             pos.z = pos.y / 1000f + 0.001f;
             print.Transform.SetPositionAndRotation(pos, Quaternion.EulerRotation(0, 0, UnityEngine.Random.Range(0.0f, 360.0f)));
@@ -78,13 +78,13 @@ namespace TheOtherRoles.Objects
             foreach (var activeFootprint in _activeFootprints)
             {
                 var p = activeFootprint.Lifetime / FootprintDuration;
-                
+
                 if (activeFootprint.Lifetime <= 0)
                 {
                     _toRemove.Add(activeFootprint);
                     continue;
                 }
-                
+
                 Color color;
                 if (AnonymousFootprints || Camouflager.camouflageTimer > 0)
                 {
@@ -104,7 +104,7 @@ namespace TheOtherRoles.Objects
 
                 activeFootprint.Lifetime -= dt;
             }
-            
+
             foreach (var footprint in _toRemove)
             {
                 footprint.GameObject.SetActive(false);

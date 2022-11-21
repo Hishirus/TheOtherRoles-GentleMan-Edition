@@ -5,15 +5,18 @@ using System.Linq;
 using TheOtherRoles.Players;
 using TheOtherRoles.Utilities;
 
-namespace TheOtherRoles.Objects {
+namespace TheOtherRoles.Objects
+{
 
-    public class JackInTheBox {
+    public class JackInTheBox
+    {
         public static System.Collections.Generic.List<JackInTheBox> AllJackInTheBoxes = new System.Collections.Generic.List<JackInTheBox>();
         public static int JackInTheBoxLimit = 3;
         public static bool boxesConvertedToVents = false;
         public static Sprite[] boxAnimationSprites = new Sprite[18];
 
-        public static Sprite getBoxAnimationSprite(int index) {
+        public static Sprite getBoxAnimationSprite(int index)
+        {
             if (boxAnimationSprites == null || boxAnimationSprites.Length == 0) return null;
             index = Mathf.Clamp(index, 0, boxAnimationSprites.Length - 1);
             if (boxAnimationSprites[index] == null)
@@ -21,12 +24,15 @@ namespace TheOtherRoles.Objects {
             return boxAnimationSprites[index];
         }
 
-        public static void startAnimation(int ventId) {
+        public static void startAnimation(int ventId)
+        {
             JackInTheBox box = AllJackInTheBoxes.FirstOrDefault((x) => x?.vent != null && x.vent.Id == ventId);
             if (box == null) return;
 
-            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(0.6f, new Action<float>((p) => {
-                if (box.boxRenderer != null) {
+            FastDestroyableSingleton<HudManager>.Instance.StartCoroutine(Effects.Lerp(0.6f, new Action<float>((p) =>
+            {
+                if (box.boxRenderer != null)
+                {
                     box.boxRenderer.sprite = getBoxAnimationSprite((int)(p * boxAnimationSprites.Length));
                     if (p == 1f) box.boxRenderer.sprite = getBoxAnimationSprite(0);
                 }
@@ -37,10 +43,11 @@ namespace TheOtherRoles.Objects {
         public Vent vent;
         private SpriteRenderer boxRenderer;
 
-        public JackInTheBox(Vector2 p) {
-            gameObject = new GameObject("JackInTheBox"){layer = 11};
-            gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
-            Vector3 position = new Vector3(p.x, p.y,  p.y/1000f + 0.01f);
+        public JackInTheBox(Vector2 p)
+        {
+            gameObject = new GameObject("JackInTheBox") { layer = 11 };
+            // gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
+            Vector3 position = new Vector3(p.x, p.y, p.y / 1000f + 0.01f);
             position += (Vector3)CachedPlayer.LocalPlayer.PlayerControl.Collider.offset; // Add collider offset that DoMove moves the player up at a valid position
             // Create the marker
             gameObject.transform.position = position;
@@ -50,7 +57,7 @@ namespace TheOtherRoles.Objects {
             // Create the vent
             var referenceVent = UnityEngine.Object.FindObjectOfType<Vent>();
             vent = UnityEngine.Object.Instantiate<Vent>(referenceVent);
-            vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
+            // vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.Classes.ElevatorMover);
             vent.transform.position = gameObject.transform.position;
             vent.Left = null;
             vent.Right = null;
@@ -76,22 +83,27 @@ namespace TheOtherRoles.Objects {
             AllJackInTheBoxes.Add(this);
         }
 
-        public static void UpdateStates() {
+        public static void UpdateStates()
+        {
             if (boxesConvertedToVents == true) return;
-            foreach (var box in AllJackInTheBoxes) {
+            foreach (var box in AllJackInTheBoxes)
+            {
                 var playerIsTrickster = CachedPlayer.LocalPlayer.PlayerControl == Trickster.trickster;
                 box.gameObject.SetActive(playerIsTrickster);
             }
         }
 
-        public void convertToVent() {
+        public void convertToVent()
+        {
             gameObject.SetActive(true);
             vent.gameObject.SetActive(true);
             return;
         }
 
-        public static void convertToVents() {
-            foreach (var box in AllJackInTheBoxes) {
+        public static void convertToVents()
+        {
+            foreach (var box in AllJackInTheBoxes)
+            {
                 box.convertToVent();
             }
             connectVents();
@@ -99,12 +111,15 @@ namespace TheOtherRoles.Objects {
             return;
         }
 
-        public static bool hasJackInTheBoxLimitReached() {
+        public static bool hasJackInTheBoxLimitReached()
+        {
             return (AllJackInTheBoxes.Count >= JackInTheBoxLimit);
         }
 
-        private static void connectVents() {
-            for (var i = 0; i < AllJackInTheBoxes.Count - 1; i++) {
+        private static void connectVents()
+        {
+            for (var i = 0; i < AllJackInTheBoxes.Count - 1; i++)
+            {
                 var a = AllJackInTheBoxes[i];
                 var b = AllJackInTheBoxes[i + 1];
                 a.vent.Right = b.vent;
@@ -115,7 +130,8 @@ namespace TheOtherRoles.Objects {
             AllJackInTheBoxes.Last().vent.Right = AllJackInTheBoxes.First().vent;
         }
 
-        public static void clearJackInTheBoxes() {
+        public static void clearJackInTheBoxes()
+        {
             boxesConvertedToVents = false;
             AllJackInTheBoxes = new List<JackInTheBox>();
         }

@@ -21,12 +21,12 @@ public class CachedPlayer
     public CustomNetworkTransform NetTransform;
     public GameData.PlayerInfo Data;
     public byte PlayerId;
-    
+
     public static implicit operator bool(CachedPlayer player)
     {
         return player != null && player.PlayerControl;
     }
-    
+
     public static implicit operator PlayerControl(CachedPlayer player) => player.PlayerControl;
     public static implicit operator PlayerPhysics(CachedPlayer player) => player.PlayerPhysics;
 
@@ -49,12 +49,12 @@ public static class CachedPlayerPatches
         public static void SetLocalPlayer()
         {
             var localPlayer = PlayerControl.LocalPlayer;
-            if (!localPlayer )
+            if (!localPlayer)
             {
                 CachedPlayer.LocalPlayer = null;
                 return;
             }
-            
+
             var cached = CachedPlayer.AllPlayers.FirstOrDefault(p => p.PlayerControl.Pointer == localPlayer.Pointer);
             if (cached != null)
             {
@@ -63,7 +63,7 @@ public static class CachedPlayerPatches
             }
         }
     }
-    
+
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
     [HarmonyPostfix]
     public static void CachePlayerPatch(PlayerControl __instance)
@@ -78,7 +78,7 @@ public static class CachedPlayerPatches
         };
         CachedPlayer.AllPlayers.Add(player);
         CachedPlayer.PlayerPtrs[__instance.Pointer] = player;
-        
+
 #if DEBUG
         foreach (var cachedPlayer in CachedPlayer.AllPlayers)
         {
@@ -89,7 +89,7 @@ public static class CachedPlayerPatches
         }
 #endif
     }
-    
+
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.OnDestroy))]
     [HarmonyPostfix]
     public static void RemoveCachedPlayerPatch(PlayerControl __instance)
@@ -98,7 +98,7 @@ public static class CachedPlayerPatches
         CachedPlayer.AllPlayers.RemoveAll(p => p.PlayerControl.Pointer == __instance.Pointer);
         CachedPlayer.PlayerPtrs.Remove(__instance.Pointer);
     }
-    
+
     [HarmonyPatch(typeof(GameData), nameof(GameData.Deserialize))]
     [HarmonyPostfix]
     public static void AddCachedDataOnDeserialize()
@@ -109,7 +109,7 @@ public static class CachedPlayerPatches
             cachedPlayer.PlayerId = cachedPlayer.PlayerControl.PlayerId;
         }
     }
-    
+
     [HarmonyPatch(typeof(GameData), nameof(GameData.AddPlayer))]
     [HarmonyPostfix]
     public static void AddCachedDataOnAddPlayer()
@@ -120,7 +120,7 @@ public static class CachedPlayerPatches
             cachedPlayer.PlayerId = cachedPlayer.PlayerControl.PlayerId;
         }
     }
-    
+
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Deserialize))]
     [HarmonyPostfix]
     public static void SetCachedPlayerId(PlayerControl __instance)
