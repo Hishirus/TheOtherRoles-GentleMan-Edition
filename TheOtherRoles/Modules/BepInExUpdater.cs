@@ -34,9 +34,9 @@ public class BepInExUpdater : MonoBehaviour
     [HideFromIl2Cpp]
     public IEnumerator CoUpdate()
     {
-        Task.Run(() => MessageBox(IntPtr.Zero, "Required BepInEx update is downloading, please wait...","The Other Roles", 0));
+        Task.Run(() => MessageBox(IntPtr.Zero, "Required BepInEx update is downloading, please wait...", "The Other Roles", 0));
         UnityWebRequest www = UnityWebRequest.Get(BepInExDownloadURL);
-        yield return www.Send();        
+        yield return www.Send();
         if (www.isNetworkError || www.isHttpError)
         {
             TheOtherRolesPlugin.Logger.LogError(www.error);
@@ -46,25 +46,25 @@ public class BepInExUpdater : MonoBehaviour
         var zipPath = Path.Combine(Paths.GameRootPath, ".bepinex_update");
         File.WriteAllBytes(zipPath, www.downloadHandler.data);
 
-        
+
         var tempPath = Path.Combine(Path.GetTempPath(), "TheOtherUpdater.exe");
         var asm = Assembly.GetExecutingAssembly();
         var exeName = asm.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith("TheOtherUpdater.exe"));
-        
-        using(var resource = asm.GetManifestResourceStream(exeName))
+
+        using (var resource = asm.GetManifestResourceStream(exeName))
         {
-            using(var file = new FileStream(tempPath, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var file = new FileStream(tempPath, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 resource!.CopyTo(file);
-            } 
+            }
         }
-        
+
         var startInfo = new ProcessStartInfo(tempPath, $"--game-path \"{Paths.GameRootPath}\" --zip \"{zipPath}\"");
         startInfo.UseShellExecute = false;
         Process.Start(startInfo);
         Application.Quit();
     }
-    
+
     [DllImport("user32.dll")]
     public static extern int MessageBox(IntPtr hWnd, String text, String caption, int options);
 }

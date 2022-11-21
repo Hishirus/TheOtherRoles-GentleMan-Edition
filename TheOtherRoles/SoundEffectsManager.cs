@@ -11,7 +11,7 @@ namespace TheOtherRoles
     // Class to preload all audio/sound effects that are contained in the embedded resources.
     // The effects are made available through the soundEffects Dict / the get and the play methods.
     public static class SoundEffectsManager
-        
+
     {
         private static Dictionary<string, AudioClip> soundEffects;
 
@@ -38,7 +38,7 @@ namespace TheOtherRoles
         }
 
 
-        public static void play(string path, float volume=0.8f)
+        public static void play(string path, float volume = 0.8f)
         {
             if (!MapOptions.enableSoundEffects) return;
             AudioClip clipToPlay = get(path);
@@ -47,11 +47,13 @@ namespace TheOtherRoles
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(clipToPlay, false, volume);
         }
 
-        public static void stop(string path) {
+        public static void stop(string path)
+        {
             if (Constants.ShouldPlaySfx()) SoundManager.Instance.StopSound(get(path));
         }
 
-        public static void stopAll() {
+        public static void stopAll()
+        {
             if (soundEffects == null) return;
             foreach (var path in soundEffects.Keys) stop(path);
         }

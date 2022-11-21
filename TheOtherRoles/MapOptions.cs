@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TheOtherRoles{
-    static class MapOptions {
+namespace TheOtherRoles
+{
+    static class MapOptions
+    {
         // Set values
         public static int maxNumberOfMeetings = 10;
         public static bool blockSkippingInEmergencyMeetings = false;
@@ -28,7 +30,8 @@ namespace TheOtherRoles{
         public static string firstKillName;
         public static PlayerControl firstKillPlayer;
 
-        public static void clearAndReloadMapOptions() {
+        public static void clearAndReloadMapOptions()
+        {
             meetingsCount = 0;
             camerasToAdd = new List<SurvCamera>();
             ventsToSeal = new List<Vent>();
@@ -43,7 +46,8 @@ namespace TheOtherRoles{
             firstKillPlayer = null;
         }
 
-        public static void reloadPluginOptions() {
+        public static void reloadPluginOptions()
+        {
             ghostsSeeRoles = TheOtherRolesPlugin.GhostsSeeRoles.Value;
             ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value;
             ghostsSeeTasks = TheOtherRolesPlugin.GhostsSeeTasks.Value;
